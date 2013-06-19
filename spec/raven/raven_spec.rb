@@ -24,6 +24,15 @@ describe Raven do
     it 'yields the event to a passed block' do
       expect { |b| Raven.capture_message(message, options, &b) }.to yield_with_args(event)
     end
+
+    context 'in async-mode' do
+      before { Raven.configuration.async_sender = lambda { |ex| 'test' } }
+      after { Raven.configuration.async_sender = nil }
+
+      it 'sends the result' do
+        Raven.capture_message(message, options).should == 'test'
+      end
+    end
   end
 
   describe '.capture_exception' do
@@ -38,6 +47,15 @@ describe Raven do
 
     it 'yields the event to a passed block' do
       expect { |b| Raven.capture_exception(exception, options, &b) }.to yield_with_args(event)
+    end
+
+    context 'in async-mode' do
+      before { Raven.configuration.async_sender = lambda { |ex| 'test' } }
+      after { Raven.configuration.async_sender = nil }
+
+      it 'sends the result' do
+        Raven.capture_exception(exception, options).should == 'test'
+      end
     end
   end
 end
