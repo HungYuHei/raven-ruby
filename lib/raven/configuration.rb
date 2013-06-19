@@ -64,6 +64,8 @@ module Raven
 
     attr_accessor :server_name
 
+    attr_accessor :async_sender
+
     # The JSON adapter to be used. When unset, use multi_json's
     # intelligent defaults.
     attr_accessor :json_adapter
@@ -135,6 +137,10 @@ module Raven
       else
         !%w[test cucumber development].include?(current_environment)
       end
+    end
+
+    def async?
+      !!async_sender
     end
 
   end

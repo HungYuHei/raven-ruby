@@ -77,6 +77,14 @@ describe Raven::Configuration do
     it_should_behave_like 'a complete configuration'
   end
 
+  context 'being initialized with a async_sender lambda' do
+    before do
+      subject.async_sender = lambda { |ex| Raven.send(ex) }
+    end
+
+    it { should be_async }
+  end
+
   context 'being initialized in a non-test environment' do
     it 'should send events' do
       subject.send_in_current_environment?.should be_true

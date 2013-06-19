@@ -107,14 +107,24 @@ module Raven
     def capture_exception(exception, options={})
       if evt = Event.from_exception(exception, options)
         yield evt if block_given?
-        send(evt)
+
+        if configuration.async?
+          configuration.async_sender.call(evt)
+        else
+          send(evt)
+        end
       end
     end
 
     def capture_message(message, options={})
       if evt = Event.from_message(message, options)
         yield evt if block_given?
-        send(evt)
+
+        if configuration.async?
+          configuration.async_sender.call(evt)
+        else
+          send(evt)
+        end
       end
     end
 

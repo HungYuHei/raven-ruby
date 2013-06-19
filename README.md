@@ -155,6 +155,17 @@ Raven.configure do |config|
   config.ssl_verification = true
 ```
 
+### Send asynchronously
+
+By default the error report will send to Sentry server immediately, which will introduce a latency in the response.
+Integrating with background-job-library (Delayed::Job, Resque, etc..) deals with this problem.
+
+```ruby
+Raven.configure do |config|
+  # Use Delayed::Job
+  config.async_sender = lambda { |exception| Raven.delay.send(exception) }
+```
+
 ## Sanitizing Data (Processors)
 
 If you need to sanitize or pre-process (before its sent to the server) data, you can do so using the Processors
